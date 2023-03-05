@@ -17,11 +17,13 @@ public abstract class Game
 {
     private Glfw glfw;
     private unsafe WindowHandle* glfwWindow;
-    // private IWindow window;
     private int width;
     private int height;
     private string title;
     private GL gl;
+    private GraphicsDevice graphicsDevice;
+
+    public GraphicsDevice GraphicsDevice => graphicsDevice;
 
     public GL GL => gl;
 
@@ -65,12 +67,13 @@ public abstract class Game
 
         glfw.ShowWindow(glfwWindow);
         gl = new GL(new WindowGlNativeContext());
-        Initialize();
+        graphicsDevice = new GraphicsDevice(gl);
     }
 
     public void Run() 
     {
         Init();
+        Initialize();
         var timer = Stopwatch.StartNew();
         var lastTime = new TimeSpan();
         GameTime gameTime = new GameTime(timer);

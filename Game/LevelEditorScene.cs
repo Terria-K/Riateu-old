@@ -12,18 +12,17 @@ public class LevelEditorScene : Scene
     private GameObject randomPlayer;
     private Spritesheet sprites;
 
-    public LevelEditorScene(GL gl) : base(gl)
+    public LevelEditorScene(GraphicsDevice device, GL gl) : base(gl, device)
     {
         this.gl = gl;
-
     }
 
     public override void Initialize()
     {
-        var textures = ResourcePool.GetTexture(gl, "res/textures/cavern_deco_aseprite-Sheet.png");
+        var textures = ResourcePool.GetTexture(Device, "res/textures/cavern_deco_aseprite-Sheet.png");
         ResourcePool.AddSpritesheet("cavern_sheet", new Spritesheet(textures, 32, 32, 8, 0));
         GameCamera = new Camera(Vector2.Zero);
-        player = ResourcePool.GetTexture(gl, "res/textures/logo.png");
+        player = ResourcePool.GetTexture(Device, "res/textures/logo.png");
 
         sprites = ResourcePool.GetSpritesheet("cavern_sheet");
 

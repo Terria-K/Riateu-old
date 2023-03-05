@@ -19,8 +19,8 @@ public class SimpleGame : Game
 
     protected override void Initialize()
     {
-        buffer = new RenderTarget(GL, 1024, 768);
-        currentScene = new LevelEditorScene(GL);
+        buffer = new RenderTarget(GraphicsDevice, 1024, 768);
+        currentScene = new LevelEditorScene(GraphicsDevice, GL);
         currentScene.Initialize();
         currentScene.Ready();
     }
@@ -31,8 +31,9 @@ public class SimpleGame : Game
 
     protected override void Render()
     {
-        GL.ClearColor(Color.X, Color.Y, Color.Z, Color.W);
-        GL.Clear(ClearBufferMask.ColorBufferBit);
+        GraphicsDevice.SetRenderTarget(0);
+        GraphicsDevice.Clear(Color);
+
         currentScene.Render();
     }
 

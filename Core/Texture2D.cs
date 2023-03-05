@@ -12,82 +12,47 @@ public class Texture2D : IDisposable, IEquatable<Texture2D>
     private byte[] localBuffer;
     private int width, height;
     private ColorComponents components;
-    private GL gl;
+    private GraphicsDevice device;
 
     public int Width => width;
     public int Height => height;
     public uint Texture => rendererID;
 
-    public Texture2D(GL gl, string path) 
+    public Texture2D(GraphicsDevice device, string path) 
     {
+        this.device = device;
         StbImage.stbi_set_flip_vertically_on_load(1);
         using var fs = File.OpenRead(path);
         ImageResult image = ImageResult.FromStream(fs, ColorComponents.RedGreenBlueAlpha);
-        this.gl = gl;
         width = image.Width;
         height = image.Height;
         components = image.Comp;
         localBuffer = image.Data;
         filePath = path;
-        gl.GenTextures(1, out rendererID);
-        gl.BindTexture(GLEnum.Texture2D, rendererID);
-        gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, (int)GLEnum.Linear);
-        gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMagFilter, (int)GLEnum.Linear);
-        gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureWrapS, (int)GLEnum.ClampToEdge);
-        gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureWrapT, (int)GLEnum.ClampToEdge);
+        rendererID = device.CreateTextureBuffer();
 
-        unsafe 
-        {
-            fixed (void* ptr = &localBuffer[0]) 
-            {
-                gl.TexImage2D(
-                    GLEnum.Texture2D, 0, 
-                    (int)GLEnum.Rgba8, 
-                    (uint)width, (uint)height, 
-                    0, GLEnum.Rgba, GLEnum.UnsignedByte, 
-                    ptr);
-            }
-        }
-
-
-        gl.BindTexture(GLEnum.Texture2D, 0);
+        device.CreateTexture2D((uint)width, (uint)height, localBuffer);
     }
 
-    public Texture2D(GL gl, int width, int height) 
+    public Texture2D(GraphicsDevice device, int width, int height) 
     {
-        gl.GenTextures(1, out rendererID);
-        gl.BindTexture(GLEnum.Texture2D, rendererID);
-
-        gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, (int)GLEnum.Linear);
-        gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMagFilter, (int)GLEnum.Linear);
-        gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureWrapS, (int)GLEnum.ClampToEdge);
-        gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureWrapT, (int)GLEnum.ClampToEdge);
-
-        unsafe 
-        {
-            gl.TexImage2D(
-                GLEnum.Texture2D, 0, 
-                (int)GLEnum.Rgba8, 
-                (uint)width, (uint)height, 
-                0, GLEnum.Rgba, GLEnum.UnsignedByte, 
-                (void*)0);
-        }
-
+        rendererID = device.CreateTextureBuffer();
+        device.CreateTexture2D((uint)width, (uint)height);
     }
 
     public void Bind() 
     {
-        gl.BindTexture(GLEnum.Texture2D, rendererID);
+        device.BindTexture2D(rendererID);
     }
 
     public void Unbind() 
     {
-        gl.BindTexture(GLEnum.Texture2D, 0);
+        device.UnbindTexture2D();
     }
 
     public void Dispose()
     {
-        gl.DeleteTextures(1, rendererID);
+        device.DeleteTexture(rendererID);
     }
 
     public bool Equals(Texture2D other)

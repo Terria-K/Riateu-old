@@ -19,11 +19,11 @@ public static class ResourcePool
         return shd;
     }
 
-    public static Texture2D GetTexture(GL gl, string resourcePath) 
+    public static Texture2D GetTexture(GraphicsDevice device, string resourcePath) 
     {
         if (textures.TryGetValue(resourcePath, out Texture2D texture))
             return texture;
-        var tex = new Texture2D(gl, resourcePath);
+        var tex = new Texture2D(device, resourcePath);
         textures.Add(resourcePath, tex);
         return tex;
     }

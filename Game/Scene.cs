@@ -14,10 +14,12 @@ public abstract class Scene
     public List<GameObject> gameObjects = new List<GameObject>();
     public bool Paused;
     private bool hasRun = false;
+    public GraphicsDevice Device;
 
-    public Scene(GL gl) 
+    public Scene(GL gl, GraphicsDevice device) 
     {
         Painter = new Painter(gl);
+        this.Device = device;
     }
 
     public void Add(GameObject gameObject) 
@@ -59,7 +61,7 @@ public abstract class Scene
 
 public class LevelScene : Scene
 {
-    public LevelScene(GL gl) : base(gl)
+    public LevelScene(GL gl, GraphicsDevice device) : base(gl, device)
     {
     }
 

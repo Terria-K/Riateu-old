@@ -7,42 +7,30 @@ public class RenderTarget
 {
     public uint RendererID = 0;
     public Texture2D Texture = null;
-    private GL gl;
-    public RenderTarget(GL gl, int width, int height) 
+    private GraphicsDevice device;
+    public RenderTarget(GraphicsDevice device, int width, int height) 
     {
-        this.gl = gl;
-        gl.GenFramebuffers(1, out RendererID);
-        gl.BindFramebuffer(GLEnum.Framebuffer, RendererID);
+        this.device = device;
+        RendererID = device.CreateFrameBuffer();
 
-        Texture = new Texture2D(gl, width, height);
-        gl.FramebufferTexture2D(
-            GLEnum.Framebuffer, 
-            GLEnum.ColorAttachment0, 
-            GLEnum.Texture2D, 
-            Texture.Texture, 0
-        );
+        Texture = new Texture2D(device, width, height);
+        device.CreateFrameBufferTexture2D(Texture.Texture, (uint)width, (uint)height);
 
-        gl.GenRenderbuffers(1, out uint rboID);
-        gl.BindRenderbuffer(GLEnum.Renderbuffer, rboID);
-        gl.RenderbufferStorage(GLEnum.Renderbuffer, GLEnum.DepthComponent32, (uint)width, (uint)height);
-        gl.FramebufferRenderbuffer(GLEnum.Framebuffer, GLEnum.DepthAttachment, GLEnum.Renderbuffer, rboID);
-
+        device.CreateRenderBuffer((uint)width, (uint)height);
 #if DEBUG
-        if (gl.CheckFramebufferStatus(GLEnum.Framebuffer) != GLEnum.FramebufferComplete) 
-        {
-            Console.WriteLine("Framebuffer is incompleted");
-        }
+        device.CheckFramebuffer();
 #endif
-        gl.BindFramebuffer(GLEnum.Framebuffer, 0);
+        device.UnbindRenderTarget();
+
     } 
 
     public void Bind() 
     {
-        gl.BindFramebuffer(GLEnum.Framebuffer, RendererID);
+        device.BindRenderTarget(RendererID);
     }
 
     public void Unbind() 
     {
-        gl.BindFramebuffer(GLEnum.Framebuffer, 0);
+        device.UnbindRenderTarget();
     }
 }
