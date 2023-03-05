@@ -10,10 +10,12 @@ public class Painter
     private const int MAX_BATCH_SIZE = 1000;
     private List<VertexBatch> batches = new List<VertexBatch>();
     private GL gl;
+    private GraphicsDevice device;
 
-    public Painter(GL gl) 
+    public Painter(GL gl, GraphicsDevice device) 
     {
         this.gl = gl;
+        this.device = device;
     }
 
     public void Add(GameObject gameObject) 
@@ -42,7 +44,7 @@ public class Painter
         }
         if (!added) 
         {
-            VertexBatch batch = new VertexBatch(gl, MAX_BATCH_SIZE, sprite.GameObject.ZIndex);
+            VertexBatch batch = new VertexBatch(gl, device, MAX_BATCH_SIZE, sprite.GameObject.ZIndex);
             batch.Start();
             batches.Add(batch);
             batch.AddToBatch(sprite);

@@ -18,7 +18,7 @@ public abstract class Scene
 
     public Scene(GL gl, GraphicsDevice device) 
     {
-        Painter = new Painter(gl);
+        Painter = new Painter(gl, device);
         this.Device = device;
     }
 

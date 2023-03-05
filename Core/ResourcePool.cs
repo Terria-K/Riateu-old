@@ -10,11 +10,11 @@ public static class ResourcePool
     private static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
     private static Dictionary<string, Spritesheet> spritesheets = new Dictionary<string, Spritesheet>();
 
-    public static Shader GetShader(GL gl, string resourcePath) 
+    public static Shader GetShader(GraphicsDevice device, string resourcePath) 
     {
         if (shaders.TryGetValue(resourcePath, out Shader shader))
             return shader;
-        var shd = new Shader(gl, resourcePath + ".vert", resourcePath + ".frag");
+        var shd = new Shader(device, resourcePath + ".vert", resourcePath + ".frag");
         shaders.Add(resourcePath, shd);
         return shd;
     }

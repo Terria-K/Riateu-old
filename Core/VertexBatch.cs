@@ -50,12 +50,12 @@ public class VertexBatch : IComparable<VertexBatch>
 
 
 
-    public VertexBatch(GL gl, int maxBatchSize, int zIndex) 
+    public VertexBatch(GL gl, GraphicsDevice device, int maxBatchSize, int zIndex) 
     {
         this.gl = gl;
         this.maxBatchSize = maxBatchSize;
         this.ZIndex = zIndex;
-        shader = ResourcePool.GetShader(gl, "res/shaders/draw");
+        shader = ResourcePool.GetShader(device, "res/shaders/draw");
         vertices = new float[maxBatchSize * 4 * VERTEX_SIZE];
         sprites = new SpriteRenderer[maxBatchSize];
         numSprites = 0;
